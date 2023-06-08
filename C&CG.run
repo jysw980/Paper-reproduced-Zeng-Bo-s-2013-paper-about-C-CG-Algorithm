@@ -1,0 +1,77 @@
+reset;
+
+model C&CG_KKT.mod;
+data C&CG.dat;
+
+##Define Master problem
+problem main:  MP,  y,z,x_star,¦Ç,
+                    C1,C2,gen_C1,gen_C2,gen_C3;
+                    
+option solver cplex; 
+
+
+##Define Sub problem 
+problem sub:  SP,  x,g,d,¦È,¦Ð,v,w,h,
+              C3,C4,C5,C6,C7,C8,C9,C10,
+              C11,C12,C13,C14,C15;
+              
+option solver cplex;   
+
+
+#Initialization
+let N:=1;
+let LB:=-99999;
+let UB:=99999; 
+let M:=10000;
+
+## before the first iter,initialize the Master problem  
+let {j in DEMAND,n in 1..N} d_SP[j,n]:= 0;
+
+let ¦Ç:=0;
+
+let {i in SUPPLY,j in DEMAND,n in 1..N} x_star[i,j,n]:=0;
+
+
+printf "\n----------------------Main Loop of C&CG------------------------\n"; 
+
+## Main Loop of C&CG Algorithm ##
+repeat{
+    printf "\n-------------------------Iteration %d---------------------------\n", N;
+    
+    #display  d_SP;
+    
+    solve main;
+    
+    let LB := MP;
+    
+    #display z;
+    
+    let {i in SUPPLY} z_MP[i]:= z[i];
+    
+    #display z_MP;
+    
+    solve sub;
+    
+    let UB := min(UB,LB + SP - ¦Ç);
+     
+    #display d;
+    
+    printf "\niter: %d   ", N;
+    printf " LB: %6.1f ", LB;
+    printf " UB: %6.1f ", UB;
+    printf " Gap: %4.2f%", 100 * (UB - LB) / UB;
+    printf "\n";
+    
+    if (UB - LB) <=  1e-4 
+    then{break;}
+    
+    let N := N+1;
+    
+    let {j in DEMAND,n in 1..N:n==N} d_SP[j,n]:= d[j];
+}
+
+printf "\n-------------------------The optimal solution has been found!---------------------------\n";
+printf "--------------------------------Optimal value is %6.1f--------------------------------\n", MP;
+printf "-----------------------------------Optimal solution-------------------------------------\n";
+display y,z,x,d;
+
