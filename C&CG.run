@@ -4,7 +4,7 @@ model C&CG_KKT.mod;
 data C&CG.dat;
 
 ##Define Master problem
-problem main:  MP,  y,z,x_star,¦Ç,
+problem main:  MP,  y,z,x_gen,¦Ç,
                     C1,C2,gen_C1,gen_C2,gen_C3;
                     
 option solver cplex; 
@@ -25,11 +25,11 @@ let UB:=99999;
 let M:=10000;
 
 ## before the first iter,initialize the Master problem  
-let {j in DEMAND,n in 1..N} d_SP[j,n]:= 0;
+let {j in DEMAND,n in 1..N} d_star[j,n]:= 0;
 
 let ¦Ç:=0;
 
-let {i in SUPPLY,j in DEMAND,n in 1..N} x_star[i,j,n]:=0;
+let {i in SUPPLY,j in DEMAND,n in 1..N} x_gen[i,j,n]:=0;
 
 
 printf "\n----------------------Main Loop of C&CG------------------------\n"; 
@@ -46,7 +46,7 @@ repeat{
     
     #display z;
     
-    let {i in SUPPLY} z_MP[i]:= z[i];
+    let {i in SUPPLY} z_star[i]:= z[i];
     
     #display z_MP;
     
@@ -67,7 +67,7 @@ repeat{
     
     let N := N+1;
     
-    let {j in DEMAND,n in 1..N:n==N} d_SP[j,n]:= d[j];
+    let {j in DEMAND,n in 1..N:n==N} d_star[j,n]:= d[j];
 }
 
 printf "\n-------------------------The optimal solution has been found!---------------------------\n";

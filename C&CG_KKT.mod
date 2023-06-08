@@ -17,15 +17,15 @@ param UB; #upper bounds
 param M;  #big-M
 
 ##Master Problem Param and Var
-param d_SP  {DEMAND,1..N};  # from Sub problem
+param d_star  {DEMAND,1..N};  # from Sub problem
 var y        {SUPPLY} binary;
 var z        {SUPPLY}>=0;
 var ¦Ç;
 #column generation
-var x_star   {SUPPLY,DEMAND,1..N}>=0;  
+var x_gen   {SUPPLY,DEMAND,1..N}>=0;  
 
 ##Sub Problem Param and Var
-param z_MP   {SUPPLY};  #from Master problem
+param z_star   {SUPPLY};  #from Master problem
 var x        {SUPPLY,DEMAND};
 var g        {DEMAND}>=0;
 var d        {DEMAND};
@@ -47,18 +47,18 @@ subject to C2:
                                sum{i in SUPPLY} z[i] >= 772;  #772 == sum of basic demand + 1.8*maximal deviation
 #constraint generation
 subject to gen_C1  {n in 1..N}: 
-                               ¦Ç >= sum{i in SUPPLY,j in DEMAND} c[i,j]*x_star[i,j,n];
+                               ¦Ç >= sum{i in SUPPLY,j in DEMAND} c[i,j]*x_gen[i,j,n];
 subject to gen_C2  {i in SUPPLY,n in 1..N}:
-                               sum{j in DEMAND} x_star[i,j,n] <= z[i];
+                               sum{j in DEMAND} x_gen[i,j,n] <= z[i];
 subject to gen_C3  {j in DEMAND,n in 1..N}: 
-                               sum{i in SUPPLY} x_star[i,j,n] >= d_SP[j,n];
+                               sum{i in SUPPLY} x_gen[i,j,n] >= d_star[j,n];
 
 ##Sub problem
 maximize SP:  
             sum{i in SUPPLY,j in DEMAND} c[i,j]*x[i,j];
 
 subject to C3  {i in SUPPLY}: 
-                             sum{j in DEMAND} x[i,j] <= z_MP[i];
+                             sum{j in DEMAND} x[i,j] <= z_star[i];
 subject to C4  {j in DEMAND}: 
                              sum{i in SUPPLY} x[i,j] >= d[j];
 subject to C5  {i in SUPPLY,j in DEMAND}:
@@ -74,7 +74,7 @@ subject to C9   {j in DEMAND}:
 subject to C10  {i in SUPPLY}: 
                              ¦Ð[i] <= M*v[i];
 subject to C11  {i in SUPPLY}: 
-                             z_MP[i] - sum{j in DEMAND} x[i,j] <= M*(1-v[i]);
+                             z_star[i] - sum{j in DEMAND} x[i,j] <= M*(1-v[i]);
 subject to C12  {j in DEMAND}:
                              ¦È[j] <= M*w[j];
 subject to C13  {j in DEMAND}: 
