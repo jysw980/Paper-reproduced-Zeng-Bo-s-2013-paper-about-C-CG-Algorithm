@@ -1,5 +1,5 @@
 # Paper-reproduced-Zeng-Bo's-2013-paper-about-C&CG-Algorithm
-These code are written in AMPL.
+These codes are written in AMPL.
 AMPL (A Mathematical Programming Language) is a high-level language for expressing optimization models. It is widely used in academia and industry to model and solve linear, nonlinear, and integer optimization problems. 
 More about AMPL, please click https://ampl.com/ 
 
