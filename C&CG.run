@@ -27,9 +27,9 @@ let M:=10000;
 ## before the first iter,initialize the Master problem  
 let {j in DEMAND,n in 1..N} d_star[j,n]:= 0;
 
-fix ¦Ç:=0;
+let ¦Ç:=0;
 
-fix {i in SUPPLY,j in DEMAND,n in 1..N} x_gen[i,j,n]:=0;
+let {i in SUPPLY,j in DEMAND,n in 1..N} x_gen[i,j,n]:=0;
 
 
 printf "\n----------------------Main Loop of C&CG------------------------\n"; 
