@@ -20,7 +20,7 @@ param M;  #big-M
 param d_star  {DEMAND,1..N};  # from Sub problem
 var y        {SUPPLY} binary;
 var z        {SUPPLY}>=0;
-var ¦Ç;
+var ¦Ç>=0;
 #column generation
 var x_gen   {SUPPLY,DEMAND,1..N}>=0;  
 
@@ -46,11 +46,11 @@ subject to C1  {i in SUPPLY}:
 subject to C2:   
                                sum{i in SUPPLY} z[i] >= 772;  #772 == sum of basic demand + 1.8*maximal deviation
 #constraint generation
-subject to gen_C1  {n in 1..N}: 
+subject to gen_C1  {n in 2..N}: 
                                ¦Ç >= sum{i in SUPPLY,j in DEMAND} c[i,j]*x_gen[i,j,n];
-subject to gen_C2  {i in SUPPLY,n in 1..N}:
+subject to gen_C2  {i in SUPPLY,n in 2..N}:
                                sum{j in DEMAND} x_gen[i,j,n] <= z[i];
-subject to gen_C3  {j in DEMAND,n in 1..N}: 
+subject to gen_C3  {j in DEMAND,n in 2..N}: 
                                sum{i in SUPPLY} x_gen[i,j,n] >= d_star[j,n];
 
 ##Sub problem

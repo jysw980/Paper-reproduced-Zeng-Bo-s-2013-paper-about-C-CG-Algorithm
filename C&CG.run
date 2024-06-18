@@ -4,14 +4,14 @@ model C&CG_KKT.mod;
 data C&CG.dat;
 
 ##Define Master problem
-problem main:  MP,  y,z,x_gen,¬¶√á,
+problem main:  MP,  y,z,x_gen,¶«,
                     C1,C2,gen_C1,gen_C2,gen_C3;
                     
 option solver cplex; 
 
 
 ##Define Sub problem 
-problem sub:  SP,  x,g,d,¬¶√à,¬¶√ê,v,w,h,
+problem sub:  SP,  x,g,d,¶»,¶–,v,w,h,
               C3,C4,C5,C6,C7,C8,C9,C10,
               C11,C12,C13,C14,C15;
               
@@ -24,38 +24,22 @@ let LB:=-99999;
 let UB:=99999; 
 let M:=10000;
 
-## before the first iter,initialize the Master problem  
-let {j in DEMAND,n in 1..N} d_star[j,n]:= 0;
-
-let ¬¶√á:=0;
-
-let {i in SUPPLY,j in DEMAND,n in 1..N} x_gen[i,j,n]:=0;
-
 
 printf "\n----------------------Main Loop of C&CG------------------------\n"; 
-
 ## Main Loop of C&CG Algorithm ##
 repeat{
     printf "\n-------------------------Iteration %d---------------------------\n", N;
-    
-    #display  d_SP;
     
     solve main;
     
     let LB := MP;
     
-    #display z;
-    
     let {i in SUPPLY} z_star[i]:= z[i];
-    
-    #display z_MP;
     
     solve sub;
     
-    let UB := min(UB,LB + SP - ¬¶√á);
+    let UB := min(UB,LB + SP - ¶«);
      
-    #display d;
-    
     printf "\niter: %d   ", N;
     printf " LB: %6.1f ", LB;
     printf " UB: %6.1f ", UB;
